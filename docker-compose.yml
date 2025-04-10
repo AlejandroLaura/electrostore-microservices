@@ -1,0 +1,123 @@
+
+
+services:
+  eureka-server:
+    build: eureka-server
+    mem_limit: 512m
+    ports:
+      - "8761:8761"
+    networks:
+      - 'electrostore-network'
+    restart: always  
+  config-server:
+    build: config-server
+    mem_limit: 512m
+    ports:
+      - "8081:8081"
+    environment:
+      GIT_USER: alejandrolaura12@gmail.com
+      GIT_PASSWORD: perryloco12
+    networks:
+      - 'electrostore-network'
+    restart: always
+  api-gateway:
+    build: api-gateway
+    mem_limit: 512m
+    ports:
+      - "8080:8080"
+    networks:
+      - 'electrostore-network'
+    restart: always
+  products-service:
+    build: products-service
+    mem_limit: 512m
+    ports:
+      - "8083:8083"
+    environment:
+      DB_URL: jdbc:mysql://db_products:3306/products_service?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER_NAME: admin
+      DB_PASSWORD: admin
+    restart: always
+    depends_on:
+      db_products:
+        condition: service_healthy
+    networks:
+      - 'electrostore-network'
+  db_products:
+    image: mysql:8.0.33
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: products_service
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
+    networks:
+      - 'electrostore-network'
+  carts-service:
+    build: carts-service
+    mem_limit: 512m
+    ports:
+      - "8084:8084"
+    environment:
+      DB_URL: jdbc:mysql://db_carts:3306/carts_service?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER_NAME: admin
+      DB_PASSWORD: admin
+    restart: always
+    depends_on:
+      db_carts:
+        condition: service_healthy
+    networks:
+      - 'electrostore-network'
+  db_carts:
+    image: mysql:8.0.33
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: carts_service
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
+    networks:
+      - 'electrostore-network'
+  sales-service:
+    build: sales-service
+    mem_limit: 512m
+    ports:
+      - "8085:8085"
+    environment:
+      DB_URL: jdbc:mysql://db_sales:3306/sales_service?createDatabaseIfNotExist=true&serverTimezone=UTC
+      DB_USER_NAME: admin
+      DB_PASSWORD: admin
+    restart: always
+    depends_on:
+      db_sales:
+        condition: service_healthy
+    networks:
+      - 'electrostore-network'
+  db_sales:
+    image: mysql:8.0.33
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: sales_service
+    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 10
+    networks:
+      - 'electrostore-network'    
+      
+networks:
+  electrostore-network:
