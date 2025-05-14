@@ -1,5 +1,6 @@
 # Electrostore Microservices 🛍️
 
+Sistema de e-commerce desarrollado con arquitectura de microservicios en Java, Spring Boot y Spring Cloud. Permite gestionar productos, carritos de compra y ventas de forma distribuida, simulando una tienda online moderna.
 Proyecto de arquitectura de microservicios desarrollado en Java y Spring Boot como parte de mi formación en desarrollo backend.
 
 ## 🧩 Tecnologías utilizadas
